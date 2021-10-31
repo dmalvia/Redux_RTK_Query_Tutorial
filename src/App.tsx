@@ -1,58 +1,35 @@
 import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
 import './App.css';
+import { useContactsQuery, useContactQuery } from './services/contactsApi';
 
 function App() {
+  const { data, error, isLoading, isFetching,isSuccess } = useContactsQuery();
+  console.log(data);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
+      <h1>React Redux Toolkit RTK Query Tutorial</h1>
+      {isLoading && <h2>...Loading</h2>}
+      {isFetching && <h2>...isFetching</h2>}
+      {error && <h2>Something went wrong</h2>}
+      {isSuccess && (
+        <div>
+          {data?.map(contact => {
+            return <div className="data" key={contact.id}>
+              <span>{contact.name}</span>
+              <span><ContactDetail id={ contact.id} /></span>
+            </div>
+          })}
+        </div>
+      )}
     </div>
   );
+}
+
+export const ContactDetail = ({ id }:{id:string}) => {
+  const { data } = useContactQuery(id);
+  return (
+    <pre>{ JSON.stringify(data, undefined, 2)}</pre>
+  )
 }
 
 export default App;
